@@ -1,0 +1,27 @@
+[
+  {
+    "nome": "Alberto",
+    "cargo": "Mec",
+    "idade": "43"
+  },
+  {
+    "nome": "Andre",
+    "cargo": "Eng",
+    "idade": "43"
+  },
+  {
+    "nome": "Carlos",
+    "cargo": "Eletricista",
+    "idade": "43"
+  },
+  {
+    "nome": "Roberto",
+    "cargo": "Mec",
+    "idade": "45"
+  },
+  {
+    "nome": "Vanessa",
+    "cargo": "SA",
+    "idade": "44"
+  }
+]

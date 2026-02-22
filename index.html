@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Sistema RH</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f4f4; padding: 20px; }
+        .container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        input { width: 100%; padding: 10px; margin: 5px 0; box-sizing: border-box; }
+        button { width: 100%; padding: 10px; background: #4f46e5; color: white; border: none; cursor: pointer; margin-top: 10px; }
+        .card { border-bottom: 1px solid #eee; padding: 10px; display: flex; justify-content: space-between; }
+        .btn-excluir { width: auto; background: #ef4444; font-size: 12px; margin: 0; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>SISTEMA RH</h1>
+    <input type="text" id="campoBusca" placeholder="Procurar..." oninput="filtrar()">
+    <hr>
+    <input id="nome" placeholder="Nome">
+    <input id="cargo" placeholder="Cargo">
+    <input id="idade" type="number" placeholder="Idade">
+    <button onclick="adicionar()">Salvar Funcionário</button>
+    <hr>
+    <div id="lista"></div>
+</div>
+
+<script>
+    let funcionarios = [];
+
+    async function carregar() {
+        const res = await fetch('/funcionarios');
+        funcionarios = await res.json();
+        mostrar(funcionarios);
+    }
+
+    function mostrar(lista) {
+        const div = document.getElementById('lista');
+        div.innerHTML = '';
+        lista.forEach(f => {
+            const item = document.createElement('div');
+            item.className = 'card';
+            // Usando concatenação simples para evitar erros de sintaxe
+            item.innerHTML = '<div><b>' + f.nome + '</b><br><small>' + f.cargo + '</small></div>' +
+                             '<button class="btn-excluir" onclick="remover(\'' + f.nome + '\')">Excluir</button>';
+            div.appendChild(item);
+        });
+    }
+
+    function filtrar() {
+        const termo = document.getElementById('campoBusca').value.toLowerCase();
+        const filtrados = funcionarios.filter(function(f) {
+            return f.nome.toLowerCase().indexOf(termo) > -1;
+        });
+        mostrar(filtrados);
+    }
+
+    async function adicionar() {
+        const n = document.getElementById('nome').value;
+        const c = document.getElementById('cargo').value;
+        const i = document.getElementById('idade').value;
+
+        if(!n || !c) return alert("Preencha os campos!");
+
+        await fetch('/funcionarios', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ nome: n, cargo: c, idade: i })
+        });
+
+        document.getElementById('nome').value = '';
+        document.getElementById('cargo').value = '';
+        document.getElementById('idade').value = '';
+        carregar();
+    }
+
+    async function remover(nome) {
+        if(confirm('Remover ' + nome + '?')) {
+            await fetch('/funcionarios/' + nome, { method: 'DELETE' });
+            carregar();
+        }
+    }
+
+    carregar();
+</script>
+</body>
+</html>
