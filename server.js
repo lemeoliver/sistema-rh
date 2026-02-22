@@ -49,5 +49,8 @@ app.delete('/funcionarios/:nome', (req, res) => {
     res.json({ mensagem: 'Removido com sucesso!' });
 });
 
+// O Render exige que o servidor aceite conexões de '0.0.0.0'
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(Servidor rodando na porta ${PORT}));
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(Servidor rodando na porta ${PORT});
+});
